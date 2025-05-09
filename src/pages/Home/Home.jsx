@@ -31,6 +31,7 @@ import { EditIcon } from "../../Icons/EditIcon";
 import { DeleteIcon } from "../../Icons/DeleteIcon";
 import { Popconfirm } from "antd";
 import { ChevronDownIcon } from "../../Icons/ChevronDownIcon";
+import EditModal from "../../components/Modals/EditModal";
 
 export const statusOptions = [
   { name: "Terminé", uid: 1 },
@@ -47,10 +48,16 @@ export default function Home() {
     onOpen: onCreateOpen,
     onOpenChange: onCreateOpenChange,
   } = useDisclosure();
+  const {
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onOpenChange: onEditOpenChange,
+  } = useDisclosure();
   const [filterValue, setFilterValue] = useState("");
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [statusFilter, setStatusFilter] = React.useState("all");
+  const [selectedData, setSelectedData] = useState(null);
 
   // Utilisation de useAsyncList pour gérer les données avec tri
   const list = useAsyncList({
@@ -145,6 +152,11 @@ export default function Home() {
       console.error(error);
     }
   };
+
+  const handleEdit = (item) => {
+    setSelectedData(item);
+    onEditOpen();
+  };
   return (
     <>
       <div className="mx-5">
@@ -200,12 +212,12 @@ export default function Home() {
             onSuccess={reloadData}
           />
 
-          {/* <EditModal
-          isOpen={isEditOpen}
-          onOpenChange={onEditOpenChange}
-          onSuccess={reloadData}
-          currentData={selectedData}
-        /> */}
+          <EditModal
+            isOpen={isEditOpen}
+            onOpenChange={onEditOpenChange}
+            onSuccess={reloadData}
+            currentData={selectedData}
+          />
         </div>
 
         <div className="flex justify-between items-center mb-5">
